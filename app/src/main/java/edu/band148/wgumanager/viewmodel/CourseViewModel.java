@@ -20,6 +20,10 @@ public class CourseViewModel extends AndroidViewModel {
         allCourses = appRepository.getAllCourses();
     }
 
+    public LiveData<List<Course>> getCoursesByTerm(int termUID) {
+        return appRepository.getCoursesByTerm(termUID);
+    }
+
     public LiveData<List<Course>> getAllCourses() { return allCourses; }
 
     public void insert(Course course) {appRepository.insertCourse(course);}

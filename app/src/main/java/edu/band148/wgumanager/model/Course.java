@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 public class Course {
     @PrimaryKey(autoGenerate = true)
     public int courseUID;
+    public int termUID;
     public String courseTitle;
     public String startDate;
     public String endDate;

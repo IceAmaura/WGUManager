@@ -54,6 +54,10 @@ public class AppRepository {
     public LiveData<List<Assessment>> getAllAssessments() {
         return allAssessments;
     }
+
+    public LiveData<List<Course>> getCoursesByTerm(int termUID) {
+        return courseDao.findByTerm(termUID);
+    }
     
     public void insertTerm(Term term) {
         new insertTermAsyncTask(termDao).execute(term);

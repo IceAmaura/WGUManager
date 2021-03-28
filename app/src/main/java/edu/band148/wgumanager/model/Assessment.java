@@ -9,6 +9,7 @@ public class Assessment {
     @PrimaryKey(autoGenerate = true)
     public int assessmentUID;
     public int courseUID;
+    public String assessmentTitle;
     public String assessmentType;
     public String startDate;
     public String endDate;

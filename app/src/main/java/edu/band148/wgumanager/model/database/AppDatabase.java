@@ -62,6 +62,7 @@ public abstract class AppDatabase extends RoomDatabase {
             assessmentDao = db.assessmentDao();
         }
 
+        //Construct initial data
         @Override
         protected Void doInBackground(Void... voids) {
             for (int i = 0; i < 2; i++) {
@@ -70,6 +71,38 @@ public abstract class AppDatabase extends RoomDatabase {
                 tempTerm.termStart = "01-01-2021";
                 tempTerm.termEnd = "06-01-2021";
                 termDao.insertAll(tempTerm);
+                for (int j = 0; j < 2; j++) {
+                    Course tempCourse = new Course();
+                    tempCourse.termUID = i + 1;
+                    tempCourse.courseTitle = "Course " + (j + 1) + " - Term " + (i + 1);
+                    tempCourse.startDate = "01-01-2021";
+                    tempCourse.endDate = "06-01-2021";
+                    tempCourse.status = "In Progress";
+                    tempCourse.note = "Test Note";
+                    courseDao.insertAll(tempCourse);
+                    for (int k = 0; k < 2; k++) {
+                        Assessment tempAssessment = new Assessment();
+                        Instructor tempInstructor = new Instructor();
+                        if (i == 0) {
+                            tempAssessment.courseUID = j + 1;
+                            tempInstructor.courseUID = j + 1;
+                        } else {
+                            tempAssessment.courseUID = j + 3;
+                            tempInstructor.courseUID = j + 3;
+                        }
+
+                        tempAssessment.assessmentTitle = "Test " + (k + 1);
+                        tempAssessment.assessmentType = (k == 0) ? "Objective" : "Performance";
+                        tempAssessment.startDate = "01-01-2021";
+                        tempAssessment.endDate = "06-01-2021";
+                        assessmentDao.insertAll(tempAssessment);
+
+                        tempInstructor.instructorName = (k == 0) ? "John Doe" : "Jill Johnson";
+                        tempInstructor.instructorPhone = "555-555-5555";
+                        tempInstructor.instructorEmail = "example@example.com";
+                        instructorDao.insertAll(tempInstructor);
+                    }
+                }
             }
 
             return null;

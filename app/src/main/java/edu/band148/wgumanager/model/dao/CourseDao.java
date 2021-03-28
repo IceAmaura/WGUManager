@@ -18,6 +18,9 @@ public interface CourseDao {
     @Query("SELECT * FROM course WHERE courseUID=:UID")
     Course findByUID(int UID);
 
+    @Query("SELECT * FROM course WHERE termUID=:termUID")
+    LiveData<List<Course>> findByTerm(int termUID);
+
     @Insert
     void insertAll(Course... course);
 

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="6dp">
-
     <TextView
-        android:id="@+id/term"
-        style="@style/item_title"
+        android:id="@+id/course"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="--placeholder--"></TextView>
-
+        style="@style/item_title"
+        tools:text="--placeholder--">
+    </TextView>
 </android.widget.LinearLayout>

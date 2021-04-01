@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -54,5 +55,27 @@ public class TermActivity extends AppCompatActivity {
                 adapter.setTerms(terms);
             }
         });
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditTermActivity.class);
+            intent.putExtra("add", true);
+            startActivityForResult(intent, 1);
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            Term tempTerm = new Term();
+            if (!data.getBooleanExtra("add", true)) {
+                tempTerm.termUID = data.getIntExtra("termUID", Integer.MAX_VALUE);
+            }
+            tempTerm.termTitle = data.getStringExtra("termTitle");
+            tempTerm.termStart = data.getStringExtra("termStart");
+            tempTerm.termEnd = data.getStringExtra("termEnd");
+            termViewModel.insert(tempTerm);
+        }
     }
 }

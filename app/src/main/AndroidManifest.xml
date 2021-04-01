@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WGUManager">
+        <activity android:name=".EditTermActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
         <activity
             android:name=".TermActivity"
             android:label="@string/app_name"
@@ -22,8 +25,11 @@
         <activity
             android:name=".CourseActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.WGUManager.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
+        <activity
+            android:name=".AssessmentActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
     </application>
 
 </manifest>

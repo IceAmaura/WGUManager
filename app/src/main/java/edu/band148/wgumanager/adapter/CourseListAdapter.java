@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.band148.wgumanager.AssessmentActivity;
 import edu.band148.wgumanager.CourseActivity;
 import edu.band148.wgumanager.R;
 import edu.band148.wgumanager.model.Course;
@@ -38,6 +39,7 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
         if (mCourseList != null) {
             final Course currentCourse = mCourseList.get(position);
+            holder.course = currentCourse;
             holder.CourseItemViewText.setText(currentCourse.courseTitle);
         }
     }
@@ -58,17 +60,20 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
     class CourseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public final TextView CourseItemViewText;
         final CourseListAdapter courseListAdapter;
+        public Course course = new Course();
 
         public CourseViewHolder(View itemView, CourseListAdapter adapter) {
             super(itemView);
             CourseItemViewText = itemView.findViewById(R.id.course);
             this.courseListAdapter = adapter;
+            itemView.setOnClickListener(this::onClick);
+            itemView.setOnLongClickListener(this::onLongClick);
         }
 
         @Override
         public void onClick(View v) {
-            //TODO
-            Intent intent = new Intent(context, CourseActivity.class);
+            Intent intent = new Intent(context, AssessmentActivity.class);
+            intent.putExtra("courseUID", course.courseUID);
             context.startActivity(intent);
         }
 

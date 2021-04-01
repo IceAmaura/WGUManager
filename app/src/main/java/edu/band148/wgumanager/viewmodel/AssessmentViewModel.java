@@ -22,5 +22,9 @@ public class AssessmentViewModel extends AndroidViewModel {
 
     public LiveData<List<Assessment>> getAllAssessments() { return allAssessments; }
 
+    public LiveData<List<Assessment>> getAssessmentsByCourse(int courseUID) {
+        return appRepository.getAssessmentsByCourse(courseUID);
+    }
+
     public void insert(Assessment assessment) {appRepository.insertAssessment(assessment);}
 }

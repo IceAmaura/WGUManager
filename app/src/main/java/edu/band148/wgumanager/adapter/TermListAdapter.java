@@ -1,5 +1,6 @@
 package edu.band148.wgumanager.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.band148.wgumanager.CourseActivity;
+import edu.band148.wgumanager.EditTermActivity;
 import edu.band148.wgumanager.R;
 import edu.band148.wgumanager.model.Term;
 
@@ -37,7 +39,7 @@ public class TermListAdapter extends RecyclerView.Adapter<TermListAdapter.TermVi
     public void onBindViewHolder(@NonNull TermViewHolder holder, int position) {
         if (mTermList != null) {
             final Term current = mTermList.get(position);
-            holder.termUID = current.termUID;
+            holder.term = current;
             holder.TermItemViewText.setText(current.termTitle);
         }
     }
@@ -58,7 +60,7 @@ public class TermListAdapter extends RecyclerView.Adapter<TermListAdapter.TermVi
     class TermViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public final TextView TermItemViewText;
         final TermListAdapter termListAdapter;
-        private int termUID = 0;
+        public Term term = new Term();
 
         public TermViewHolder(View itemView, TermListAdapter adapter) {
             super(itemView);
@@ -71,13 +73,24 @@ public class TermListAdapter extends RecyclerView.Adapter<TermListAdapter.TermVi
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(context, CourseActivity.class);
-            intent.putExtra("termUID", termUID);
+            intent.putExtra("termUID", term.termUID);
             context.startActivity(intent);
         }
 
         @Override
         public boolean onLongClick(View v) {
+            Intent intent = new Intent(context, EditTermActivity.class);
+            intent.putExtra("add", false);
+            intent.putExtra("termUID", term.termUID);
+            intent.putExtra("termTitle", term.termTitle);
+            intent.putExtra("termStart", term.termStart);
+            intent.putExtra("termEnd", term.termEnd);
+            ((Activity)termListAdapter.getContext()).startActivityForResult(intent, 1);
             return true;
         }
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

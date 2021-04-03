@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import edu.band148.wgumanager.model.Instructor;
+import edu.band148.wgumanager.model.Instructor;
 import edu.band148.wgumanager.model.database.AppRepository;
 
 public class InstructorViewModel extends AndroidViewModel {
@@ -21,6 +22,10 @@ public class InstructorViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Instructor>> getAllInstructors() { return allInstructors; }
+
+    public LiveData<List<Instructor>> getInstructorsByCourse(int courseUID) {
+        return appRepository.getInstructorsByCourse(courseUID);
+    }
 
     public void insert(Instructor instructor) {appRepository.insertInstructor(instructor);}
 }

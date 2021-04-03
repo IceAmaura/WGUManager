@@ -11,6 +11,6 @@ public class Assessment {
     public int courseUID;
     public String assessmentTitle;
     public String assessmentType;
-    public String startDate;
-    public String endDate;
+    public String assessmentStart;
+    public String assessmentEnd;
 }

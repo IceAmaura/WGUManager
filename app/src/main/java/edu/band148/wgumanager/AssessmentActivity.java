@@ -2,6 +2,8 @@ package edu.band148.wgumanager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,10 +13,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.List;
 
 import edu.band148.wgumanager.adapter.AssessmentListAdapter;
 import edu.band148.wgumanager.model.Assessment;
+import edu.band148.wgumanager.model.Course;
 import edu.band148.wgumanager.viewmodel.AssessmentViewModel;
 
 public class AssessmentActivity extends AppCompatActivity {
@@ -43,5 +48,30 @@ public class AssessmentActivity extends AppCompatActivity {
                 adapter.setAssessments(assessments);
             }
         });
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(v -> {
+            Intent newIntent = new Intent(this, EditAssessmentActivity.class);
+            newIntent.putExtra("add", true);
+            newIntent.putExtra("courseUID", intent.getIntExtra("courseUID", Integer.MAX_VALUE));
+            startActivityForResult(newIntent, 1);
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            Assessment tempAssessment = new Assessment();
+            if (!data.getBooleanExtra("add", true)) {
+                tempAssessment.assessmentUID = data.getIntExtra("assessmentUID", Integer.MAX_VALUE);
+            }
+            tempAssessment.courseUID = data.getIntExtra("courseUID", Integer.MAX_VALUE);
+            tempAssessment.assessmentTitle = data.getStringExtra("assessmentTitle");
+            tempAssessment.assessmentType = data.getStringExtra("assessmentType");
+            tempAssessment.assessmentStart = data.getStringExtra("assessmentStart");
+            tempAssessment.assessmentEnd = data.getStringExtra("assessmentEnd");
+            assessmentViewModel.insert(tempAssessment);
+        }
     }
 }

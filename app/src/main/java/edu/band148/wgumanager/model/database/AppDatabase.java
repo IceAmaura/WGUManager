@@ -75,8 +75,8 @@ public abstract class AppDatabase extends RoomDatabase {
                     Course tempCourse = new Course();
                     tempCourse.termUID = i + 1;
                     tempCourse.courseTitle = "Course " + (j + 1) + " - Term " + (i + 1);
-                    tempCourse.startDate = "01-01-2021";
-                    tempCourse.endDate = "06-01-2021";
+                    tempCourse.courseStart = "01-01-2021";
+                    tempCourse.courseEnd = "06-01-2021";
                     tempCourse.status = "In Progress";
                     tempCourse.note = "Test Note";
                     courseDao.insertAll(tempCourse);
@@ -93,8 +93,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
                         tempAssessment.assessmentTitle = "Test " + (k + 1);
                         tempAssessment.assessmentType = (k == 0) ? "Objective" : "Performance";
-                        tempAssessment.startDate = "01-01-2021";
-                        tempAssessment.endDate = "06-01-2021";
+                        tempAssessment.assessmentStart = "01-01-2021";
+                        tempAssessment.assessmentEnd = "06-01-2021";
                         assessmentDao.insertAll(tempAssessment);
 
                         tempInstructor.instructorName = (k == 0) ? "John Doe" : "Jill Johnson";

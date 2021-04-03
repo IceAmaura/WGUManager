@@ -12,6 +12,15 @@
         <activity android:name=".EditTermActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
+        <activity android:name=".EditCourseActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
+        <activity android:name=".EditAssessmentActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
+        <activity android:name=".EditInstructorActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.WGUManager.NoActionBar"></activity>
         <activity
             android:name=".TermActivity"
             android:label="@string/app_name"

@@ -1,34 +1,31 @@
 package edu.band148.wgumanager;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
 import static edu.band148.wgumanager.util.WguManagerUtil.setCalendar;
 import static edu.band148.wgumanager.util.WguManagerUtil.updateLabel;
 
-public class EditTermActivity extends AppCompatActivity {
+public class EditAssessmentActivity extends AppCompatActivity {
 
     private final Calendar startDateCalendar;
     private final Calendar endDateCalendar;
 
-    public EditTermActivity() {
+    public EditAssessmentActivity() {
         startDateCalendar = Calendar.getInstance();
         endDateCalendar = Calendar.getInstance();
     }
@@ -36,33 +33,41 @@ public class EditTermActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_term);
+        setContentView(R.layout.activity_edit_assessment);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         if (intent.getBooleanExtra("add", true)) {
-            toolbar.setTitle("Add Term");
+            toolbar.setTitle("Add Assessment");
         } else {
-            toolbar.setTitle("Edit Term");
+            toolbar.setTitle("Edit Assessment");
         }
 
-        EditText termNameEdit = findViewById(R.id.termNameEditText);
-        EditText startDateEdit = findViewById(R.id.startTermDateEdit);
-        EditText endDateEdit = findViewById(R.id.endTermDateEdit);
+        Spinner spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> stringAdapter = ArrayAdapter.createFromResource(this, R.array.test_array, android.R.layout.simple_spinner_item);
+        stringAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(stringAdapter);
+        if (intent.getStringExtra("assessmentType") != null && intent.getStringExtra("assessmentType").equals("Performance")) {
+            spinner.setSelection(1);
+        }
+
+        EditText assessmentNameEdit = findViewById(R.id.assessmentNameEditText);
+        EditText startDateEdit = findViewById(R.id.startAssessmentDateEdit);
+        EditText endDateEdit = findViewById(R.id.endAssessmentDateEdit);
         
         if (!intent.getBooleanExtra("add", true)) {
-            String termNameString = intent.getStringExtra("termTitle");
-            String termStartString = intent.getStringExtra("termStart");
-            String termEndString = intent.getStringExtra("termEnd");
-            if (termNameString != null && !termNameString.isEmpty()) {
-                termNameEdit.setText(termNameString);
+            String assessmentNameString = intent.getStringExtra("assessmentTitle");
+            String assessmentStartString = intent.getStringExtra("assessmentStart");
+            String assessmentEndString = intent.getStringExtra("assessmentEnd");
+            if (assessmentNameString != null && !assessmentNameString.isEmpty()) {
+                assessmentNameEdit.setText(assessmentNameString);
             }
-            if (termStartString != null && !termStartString.isEmpty()) {
-                setCalendar(startDateCalendar, termStartString);
+            if (assessmentStartString != null && !assessmentStartString.isEmpty()) {
+                setCalendar(startDateCalendar, assessmentStartString);
                 updateLabel(startDateCalendar, startDateEdit);
             }
-            if (termEndString != null && !termEndString.isEmpty()) {
-                setCalendar(endDateCalendar, termEndString);
+            if (assessmentEndString != null && !assessmentEndString.isEmpty()) {
+                setCalendar(endDateCalendar, assessmentEndString);
                 updateLabel(endDateCalendar, endDateEdit);
             }
         }
@@ -90,7 +95,7 @@ public class EditTermActivity extends AppCompatActivity {
         startDateEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(EditTermActivity.this, startDate, startDateCalendar.get(Calendar.YEAR),
+                new DatePickerDialog(EditAssessmentActivity.this, startDate, startDateCalendar.get(Calendar.YEAR),
                         startDateCalendar.get(Calendar.MONTH), startDateCalendar.get(Calendar.DAY_OF_MONTH))
                         .show();
             }
@@ -99,7 +104,7 @@ public class EditTermActivity extends AppCompatActivity {
         endDateEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(EditTermActivity.this, endDate, endDateCalendar.get(Calendar.YEAR),
+                new DatePickerDialog(EditAssessmentActivity.this, endDate, endDateCalendar.get(Calendar.YEAR),
                         endDateCalendar.get(Calendar.MONTH), endDateCalendar.get(Calendar.DAY_OF_MONTH))
                         .show();
             }
@@ -107,7 +112,7 @@ public class EditTermActivity extends AppCompatActivity {
 
         FloatingActionButton floatingActionButton = findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(v -> {
-            if (termNameEdit.getText().toString().isEmpty() ||
+            if (assessmentNameEdit.getText().toString().isEmpty() ||
                     startDateEdit.getText().toString().isEmpty() ||
                     endDateEdit.getText().toString().isEmpty()) {
                 new Builder(this)
@@ -118,11 +123,13 @@ public class EditTermActivity extends AppCompatActivity {
                 Intent resultIntent = new Intent();
                 if (!intent.getBooleanExtra("add", true)) {
                     resultIntent.putExtra("add", false);
-                    resultIntent.putExtra("termUID", intent.getIntExtra("termUID", Integer.MAX_VALUE));
+                    resultIntent.putExtra("assessmentUID", intent.getIntExtra("assessmentUID", Integer.MAX_VALUE));
                 }
-                resultIntent.putExtra("termTitle", termNameEdit.getText().toString());
-                resultIntent.putExtra("termStart", startDateEdit.getText().toString());
-                resultIntent.putExtra("termEnd", endDateEdit.getText().toString());
+                resultIntent.putExtra("courseUID", intent.getIntExtra("courseUID", Integer.MAX_VALUE));
+                resultIntent.putExtra("assessmentTitle", assessmentNameEdit.getText().toString());
+                resultIntent.putExtra("assessmentType", (String)spinner.getSelectedItem());
+                resultIntent.putExtra("assessmentStart", startDateEdit.getText().toString());
+                resultIntent.putExtra("assessmentEnd", endDateEdit.getText().toString());
                 setResult(1, resultIntent);
                 finish();
             }

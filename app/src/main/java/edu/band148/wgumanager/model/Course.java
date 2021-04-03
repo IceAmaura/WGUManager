@@ -9,8 +9,8 @@ public class Course {
     public int courseUID;
     public int termUID;
     public String courseTitle;
-    public String startDate;
-    public String endDate;
+    public String courseStart;
+    public String courseEnd;
     public String status;
     public String note;
 }

@@ -10,6 +10,7 @@ import androidx.room.Query;
 import java.util.List;
 
 import edu.band148.wgumanager.model.Instructor;
+import edu.band148.wgumanager.model.Instructor;
 
 @Dao
 public interface InstructorDao {
@@ -18,6 +19,9 @@ public interface InstructorDao {
 
     @Query("SELECT * FROM instructor WHERE instructorUID=:UID")
     Instructor findByUID(int UID);
+
+    @Query("SELECT * FROM instructor WHERE courseUID=:courseUID")
+    LiveData<List<Instructor>> findByCourse(int courseUID);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Instructor... instructors);

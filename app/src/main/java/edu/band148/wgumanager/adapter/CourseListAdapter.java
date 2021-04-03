@@ -1,5 +1,6 @@
 package edu.band148.wgumanager.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import java.util.List;
 
 import edu.band148.wgumanager.AssessmentActivity;
 import edu.band148.wgumanager.CourseActivity;
+import edu.band148.wgumanager.EditCourseActivity;
+import edu.band148.wgumanager.EditTermActivity;
 import edu.band148.wgumanager.R;
 import edu.band148.wgumanager.model.Course;
 import edu.band148.wgumanager.model.Term;
@@ -79,7 +82,21 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
 
         @Override
         public boolean onLongClick(View v) {
+            Intent intent = new Intent(context, EditCourseActivity.class);
+            intent.putExtra("add", false);
+            intent.putExtra("courseUID", course.courseUID);
+            intent.putExtra("termUID", course.termUID);
+            intent.putExtra("courseTitle", course.courseTitle);
+            intent.putExtra("courseStart", course.courseStart);
+            intent.putExtra("courseEnd", course.courseEnd);
+            intent.putExtra("status", course.status);
+            intent.putExtra("note", course.note);
+            ((Activity)courseListAdapter.getContext()).startActivityForResult(intent, 1);
             return true;
         }
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

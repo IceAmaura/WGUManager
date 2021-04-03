@@ -1,5 +1,6 @@
 package edu.band148.wgumanager.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -13,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.band148.wgumanager.CourseActivity;
+import edu.band148.wgumanager.EditAssessmentActivity;
+import edu.band148.wgumanager.EditCourseActivity;
 import edu.band148.wgumanager.R;
 import edu.band148.wgumanager.model.Assessment;
+import edu.band148.wgumanager.model.Course;
 
 public class AssessmentListAdapter extends RecyclerView.Adapter<AssessmentListAdapter.AssessmentViewHolder> {
     private final LayoutInflater mInflater;
@@ -37,6 +41,7 @@ public class AssessmentListAdapter extends RecyclerView.Adapter<AssessmentListAd
     public void onBindViewHolder(@NonNull AssessmentViewHolder holder, int position) {
         if (mAssessmentList != null) {
             final Assessment current = mAssessmentList.get(position);
+            holder.assessment = current;
             holder.AssessmentItemViewText.setText(current.assessmentTitle);
         }
     }
@@ -57,6 +62,7 @@ public class AssessmentListAdapter extends RecyclerView.Adapter<AssessmentListAd
     class AssessmentViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         public final TextView AssessmentItemViewText;
         final AssessmentListAdapter assessmentListAdapter;
+        public Assessment assessment = new Assessment();
 
         public AssessmentViewHolder(View itemView, AssessmentListAdapter adapter) {
             super(itemView);
@@ -67,7 +73,20 @@ public class AssessmentListAdapter extends RecyclerView.Adapter<AssessmentListAd
 
         @Override
         public boolean onLongClick(View v) {
+            Intent intent = new Intent(context, EditAssessmentActivity.class);
+            intent.putExtra("add", false);
+            intent.putExtra("assessmentUID", assessment.assessmentUID);
+            intent.putExtra("courseUID", assessment.courseUID);
+            intent.putExtra("assessmentTitle", assessment.assessmentTitle);
+            intent.putExtra("assessmentType", assessment.assessmentType);
+            intent.putExtra("assessmentStart", assessment.assessmentStart);
+            intent.putExtra("assessmentEnd", assessment.assessmentEnd);
+            ((Activity)assessmentListAdapter.getContext()).startActivityForResult(intent, 1);
             return true;
         }
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

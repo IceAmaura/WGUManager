@@ -18,14 +18,14 @@ import edu.band148.wgumanager.model.dao.InstructorDao;
 import edu.band148.wgumanager.model.dao.TermDao;
 
 public class AppRepository {
-    private TermDao termDao;
-    private CourseDao courseDao;
-    private InstructorDao instructorDao;
-    private AssessmentDao assessmentDao;
-    private LiveData<List<Term>> allTerms;
-    private LiveData<List<Course>> allCourses;
-    private LiveData<List<Instructor>> allInstructors;
-    private LiveData<List<Assessment>> allAssessments;
+    private final TermDao termDao;
+    private final CourseDao courseDao;
+    private final InstructorDao instructorDao;
+    private final AssessmentDao assessmentDao;
+    private final LiveData<List<Term>> allTerms;
+    private final LiveData<List<Course>> allCourses;
+    private final LiveData<List<Instructor>> allInstructors;
+    private final LiveData<List<Assessment>> allAssessments;
     
     public AppRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabaseInstance(application);

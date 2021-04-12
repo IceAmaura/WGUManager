@@ -1,8 +1,14 @@
 package edu.band148.wgumanager;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -11,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -70,11 +77,21 @@ public class EditCourseActivity extends AppCompatActivity {
             }
         });
 
+        EditText courseNameEdit = findViewById(R.id.courseNameEditText);
+        EditText startDateEdit = findViewById(R.id.startCourseDateEdit);
+        EditText endDateEdit = findViewById(R.id.endCourseDateEdit);
+        EditText noteEdit = findViewById(R.id.notesTextEdit);
+
+        ImageButton startNotificationButton = findViewById(R.id.startNotificationButton);
+        ImageButton endNotificationButton = findViewById(R.id.endNotificationButton);
+
         if (intent.getBooleanExtra("add", true)) {
             toolbar.setTitle("Add Course");
             LinearLayout instructorLabel = findViewById(R.id.instructorLabelLayout);
             instructorLabel.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.GONE);
+            startNotificationButton.setVisibility(View.GONE);
+            endNotificationButton.setVisibility(View.GONE);
         } else {
             toolbar.setTitle("Edit Course");
         }
@@ -96,11 +113,6 @@ public class EditCourseActivity extends AppCompatActivity {
                     break;
             }
         }
-
-        EditText courseNameEdit = findViewById(R.id.courseNameEditText);
-        EditText startDateEdit = findViewById(R.id.startCourseDateEdit);
-        EditText endDateEdit = findViewById(R.id.endCourseDateEdit);
-        EditText noteEdit = findViewById(R.id.notesTextEdit);
         
         if (!intent.getBooleanExtra("add", true)) {
             String courseNameString = intent.getStringExtra("courseTitle");
@@ -204,6 +216,32 @@ public class EditCourseActivity extends AppCompatActivity {
             newIntent.putExtra("add", true);
             newIntent.putExtra("courseUID", intent.getIntExtra("courseUID", Integer.MAX_VALUE));
             startActivity(newIntent);
+        });
+        
+        startNotificationButton.setOnClickListener(v -> {
+            if (startDateEdit.length() > 0) {
+                Intent startIntent = new Intent(this, NotificationReceiver.class);
+                startIntent.putExtra("notification", "Your course starts today!");
+                startIntent.setAction(Long.toString(Calendar.getInstance().getTimeInMillis()));
+                PendingIntent startIntentPending = PendingIntent.getBroadcast(this, 0, startIntent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, startDateCalendar.getTimeInMillis(), startIntentPending);
+            } else {
+                Toast.makeText(this, "Please select a start date!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        endNotificationButton.setOnClickListener(v -> {
+            if (endDateEdit.length() > 0) {
+                Intent endIntent = new Intent(this, NotificationReceiver.class);
+                endIntent.putExtra("notification", "Your course ends today!");
+                endIntent.setAction(Long.toString(Calendar.getInstance().getTimeInMillis()));
+                PendingIntent endIntentPending = PendingIntent.getBroadcast(this, 0, endIntent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, endDateCalendar.getTimeInMillis(), endIntentPending);
+            } else {
+                Toast.makeText(this, "Please select an end date!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

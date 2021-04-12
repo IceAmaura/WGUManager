@@ -50,12 +50,34 @@
                 android:hint="Name..."
                 android:inputType="textPersonName" />
 
-            <TextView
-                android:id="@+id/textView2"
+            <LinearLayout
+                android:id="@+id/startLabelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Start Date"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/startTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Date"
+                    android:textSize="18sp" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/startNotificationButton"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:backgroundTint="#ffffff"
+                    app:srcCompat="@drawable/ic_baseline_notifications_24" />
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/startCourseDateEdit"
@@ -68,12 +90,34 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"/>
 
-            <TextView
-                android:id="@+id/textView"
+            <LinearLayout
+                android:id="@+id/endLabelLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="End Date"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End Date"
+                    android:textSize="18sp" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/endNotificationButton"
+                    style="@style/Widget.AppCompat.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:backgroundTint="#ffffff"
+                    app:srcCompat="@drawable/ic_baseline_notifications_24" />
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/endCourseDateEdit"

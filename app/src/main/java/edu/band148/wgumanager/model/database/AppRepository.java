@@ -59,6 +59,10 @@ public class AppRepository {
         return courseDao.findByTerm(termUID);
     }
 
+    public LiveData<Integer> getCourseCountByTerm(int termUID) {
+        return courseDao.getCourseCountByTerm(termUID);
+    }
+
     public LiveData<List<Assessment>> getAssessmentsByCourse(int courseUID) {
         return assessmentDao.findByCourse(courseUID);
     }
@@ -81,6 +85,10 @@ public class AppRepository {
 
     public void insertAssessment(Assessment assessment) {
         new insertAssessmentAsyncTask(assessmentDao).execute(assessment);
+    }
+
+    public void deleteTerm(Term term) {
+        new deleteTermAsyncTask(termDao).execute(term);
     }
 
     private static class insertTermAsyncTask extends AsyncTask<Term, Void, Void> {
@@ -135,6 +143,20 @@ public class AppRepository {
         @Override
         protected Void doInBackground(final Assessment... assessments) {
             asyncAssessmentDao.insertAll(assessments);
+            return null;
+        }
+    }
+
+    private static class deleteTermAsyncTask extends AsyncTask<Term, Void, Void> {
+        private TermDao asyncTermDao;
+
+        deleteTermAsyncTask(TermDao termDao) {
+            asyncTermDao = termDao;
+        }
+
+        @Override
+        protected Void doInBackground(final Term... terms) {
+            asyncTermDao.delete(terms[0]);
             return null;
         }
     }

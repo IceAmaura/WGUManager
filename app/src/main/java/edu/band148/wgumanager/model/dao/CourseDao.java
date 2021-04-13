@@ -22,6 +22,9 @@ public interface CourseDao {
     @Query("SELECT * FROM course WHERE termUID=:termUID")
     LiveData<List<Course>> findByTerm(int termUID);
 
+    @Query("SELECT COUNT(courseUID) FROM course WHERE termUID=:termUID")
+    LiveData<Integer> getCourseCountByTerm(int termUID);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Course... course);
 

@@ -2,6 +2,8 @@ package edu.band148.wgumanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -12,19 +14,29 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
+
+import edu.band148.wgumanager.model.Course;
+import edu.band148.wgumanager.model.Term;
+import edu.band148.wgumanager.viewmodel.CourseViewModel;
+import edu.band148.wgumanager.viewmodel.TermViewModel;
 
 import static edu.band148.wgumanager.util.WguManagerUtil.setCalendar;
 import static edu.band148.wgumanager.util.WguManagerUtil.updateLabel;
 
 public class EditTermActivity extends AppCompatActivity {
 
+    private CourseViewModel courseViewModel;
+    private TermViewModel termViewModel;
     private final Calendar startDateCalendar;
     private final Calendar endDateCalendar;
 
@@ -40,8 +52,15 @@ public class EditTermActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
+
+        ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        courseViewModel =  new ViewModelProvider(this, viewModelFactory).get(CourseViewModel.class);
+        termViewModel =  new ViewModelProvider(this, viewModelFactory).get(TermViewModel.class);
+
+        ImageButton deleteButton = findViewById(R.id.deleteButton);
         if (intent.getBooleanExtra("add", true)) {
             toolbar.setTitle("Add Term");
+            deleteButton.setVisibility(View.GONE);
         } else {
             toolbar.setTitle("Edit Term");
         }
@@ -126,6 +145,22 @@ public class EditTermActivity extends AppCompatActivity {
                 setResult(1, resultIntent);
                 finish();
             }
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            courseViewModel.getCourseCountByTerm(intent.getIntExtra("termUID", Integer.MAX_VALUE)).observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    if (integer == 0) {
+                        Term tempTerm = new Term();
+                        tempTerm.termUID = intent.getIntExtra("termUID", Integer.MAX_VALUE);
+                        termViewModel.delete(tempTerm);
+                        finish();
+                    } else if (integer > 0) {
+                        Toast.makeText(EditTermActivity.this, "Can't delete a term with attached courses!", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         });
     }
 }

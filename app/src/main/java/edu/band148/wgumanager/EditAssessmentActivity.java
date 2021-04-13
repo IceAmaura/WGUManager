@@ -1,14 +1,19 @@
 package edu.band148.wgumanager;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -54,6 +59,9 @@ public class EditAssessmentActivity extends AppCompatActivity {
         EditText assessmentNameEdit = findViewById(R.id.assessmentNameEditText);
         EditText startDateEdit = findViewById(R.id.startAssessmentDateEdit);
         EditText endDateEdit = findViewById(R.id.endAssessmentDateEdit);
+
+        ImageButton startNotificationButton = findViewById(R.id.startNotificationButton);
+        ImageButton endNotificationButton = findViewById(R.id.endNotificationButton);
         
         if (!intent.getBooleanExtra("add", true)) {
             String assessmentNameString = intent.getStringExtra("assessmentTitle");
@@ -70,6 +78,9 @@ public class EditAssessmentActivity extends AppCompatActivity {
                 setCalendar(endDateCalendar, assessmentEndString);
                 updateLabel(endDateCalendar, endDateEdit);
             }
+        } else {
+            startNotificationButton.setVisibility(View.GONE);
+            endNotificationButton.setVisibility(View.GONE);
         }
 
         DatePickerDialog.OnDateSetListener startDate = new DatePickerDialog.OnDateSetListener() {
@@ -132,6 +143,32 @@ public class EditAssessmentActivity extends AppCompatActivity {
                 resultIntent.putExtra("assessmentEnd", endDateEdit.getText().toString());
                 setResult(1, resultIntent);
                 finish();
+            }
+        });
+
+        startNotificationButton.setOnClickListener(v -> {
+            if (startDateEdit.length() > 0) {
+                Intent startIntent = new Intent(this, NotificationReceiver.class);
+                startIntent.putExtra("notification", "Your assessment starts today!");
+                startIntent.setAction(Long.toString(Calendar.getInstance().getTimeInMillis()));
+                PendingIntent startIntentPending = PendingIntent.getBroadcast(this, 0, startIntent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, startDateCalendar.getTimeInMillis(), startIntentPending);
+            } else {
+                Toast.makeText(this, "Please select a start date!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        endNotificationButton.setOnClickListener(v -> {
+            if (endDateEdit.length() > 0) {
+                Intent endIntent = new Intent(this, NotificationReceiver.class);
+                endIntent.putExtra("notification", "Your assessment ends today!");
+                endIntent.setAction(Long.toString(Calendar.getInstance().getTimeInMillis()));
+                PendingIntent endIntentPending = PendingIntent.getBroadcast(this, 0, endIntent, 0);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, endDateCalendar.getTimeInMillis(), endIntentPending);
+            } else {
+                Toast.makeText(this, "Please select an end date!", Toast.LENGTH_SHORT).show();
             }
         });
     }

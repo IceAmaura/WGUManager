@@ -217,7 +217,7 @@ public class EditCourseActivity extends AppCompatActivity {
             newIntent.putExtra("courseUID", intent.getIntExtra("courseUID", Integer.MAX_VALUE));
             startActivity(newIntent);
         });
-        
+
         startNotificationButton.setOnClickListener(v -> {
             if (startDateEdit.length() > 0) {
                 Intent startIntent = new Intent(this, NotificationReceiver.class);

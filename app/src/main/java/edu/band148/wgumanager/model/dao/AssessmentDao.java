@@ -10,12 +10,14 @@ import androidx.room.Query;
 import java.util.List;
 
 import edu.band148.wgumanager.model.Assessment;
-import edu.band148.wgumanager.model.Instructor;
 
 @Dao
 public interface AssessmentDao {
     @Query("SELECT * FROM assessment")
     LiveData<List<Assessment>> getAll();
+
+    @Query("SELECT * from assessment WHERE assessmentTitle LIKE '%' || :search || '%' AND courseUID=:courseUID")
+    LiveData<List<Assessment>> searchAssessments(String search, int courseUID);
 
     @Query("SELECT * FROM assessment WHERE assessmentUID=:UID")
     Assessment findByUID(int UID);

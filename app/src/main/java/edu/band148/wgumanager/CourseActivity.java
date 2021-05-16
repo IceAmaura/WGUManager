@@ -1,7 +1,10 @@
 package edu.band148.wgumanager;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 import edu.band148.wgumanager.adapter.CourseListAdapter;
+import edu.band148.wgumanager.model.Assessment;
 import edu.band148.wgumanager.model.Course;
 import edu.band148.wgumanager.model.Term;
 import edu.band148.wgumanager.viewmodel.CourseViewModel;
@@ -40,14 +44,36 @@ public class CourseActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         courseViewModel =  new ViewModelProvider(this, viewModelFactory).get(CourseViewModel.class);
-        courseViewModel.getCoursesByTerm(intent.getIntExtra("termUID", Integer.MAX_VALUE)).observe(this, new Observer<List<Course>>() {
-            @Override
-            public void onChanged(List<Course> courses) {
-                adapter.setCourses(courses);
-            }
-        });
-
+        ImageButton searchButton = findViewById(R.id.searchButton);
         FloatingActionButton fab = findViewById(R.id.fab);
+        int termUID = intent.getIntExtra("termUID", Integer.MAX_VALUE);
+        if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_SEARCH)) {
+            Bundle appData = getIntent().getBundleExtra(SearchManager.APP_DATA);
+            if (appData != null) {
+                termUID = appData.getInt("termUID");
+            }
+            String query = getIntent().getStringExtra(SearchManager.QUERY);
+            courseViewModel.searchCourses(query, termUID).observe(this, new Observer<List<Course>>() {
+                @Override
+                public void onChanged(List<Course> courses) {
+                    adapter.setCourses(courses);
+                }
+            });
+            searchButton.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+        } else {
+            courseViewModel.getCoursesByTerm(termUID).observe(this, new Observer<List<Course>>() {
+                @Override
+                public void onChanged(List<Course> courses) {
+                    adapter.setCourses(courses);
+                }
+            });
+            int finalTermUID = termUID;
+            searchButton.setOnClickListener(v -> {
+                onSearchRequested(finalTermUID);
+            });
+        }
+
         fab.setOnClickListener(v -> {
             Intent newIntent = new Intent(this, EditCourseActivity.class);
             newIntent.putExtra("add", true);
@@ -72,5 +98,12 @@ public class CourseActivity extends AppCompatActivity {
             tempCourse.note = data.getStringExtra("note");
             courseViewModel.insert(tempCourse);
         }
+    }
+
+    public boolean onSearchRequested(int termUID) {
+        Bundle appData = new Bundle();
+        appData.putInt("termUID", termUID);
+        startSearch(null, false, appData, false);
+        return true;
     }
 }

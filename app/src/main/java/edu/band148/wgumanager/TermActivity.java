@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,18 +51,35 @@ public class TermActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         termViewModel =  new ViewModelProvider(this, viewModelFactory).get(TermViewModel.class);
-        termViewModel.getAllTerms().observe(this, new Observer<List<Term>>() {
-            @Override
-            public void onChanged(List<Term> terms) {
-                adapter.setTerms(terms);
-            }
-        });
-
         FloatingActionButton fab = findViewById(R.id.fab);
+        if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_SEARCH)) {
+            String query = getIntent().getStringExtra(SearchManager.QUERY);
+            termViewModel.searchTerms(query).observe(this, new Observer<List<Term>>() {
+                @Override
+                public void onChanged(List<Term> terms) {
+                    adapter.setTerms(terms);
+                }
+            });
+            fab.setVisibility(View.GONE);
+        } else {
+            termViewModel.getAllTerms().observe(this, new Observer<List<Term>>() {
+                @Override
+                public void onChanged(List<Term> terms) {
+                    adapter.setTerms(terms);
+                }
+            });
+        }
+
+
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(this, EditTermActivity.class);
             intent.putExtra("add", true);
             startActivityForResult(intent, 1);
+        });
+
+        ImageButton searchButton = findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(v -> {
+            onSearchRequested();
         });
     }
 

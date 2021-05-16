@@ -16,6 +16,9 @@ public interface CourseDao {
     @Query("SELECT * FROM course")
     LiveData<List<Course>> getAll();
 
+    @Query("SELECT * from course WHERE (courseTitle LIKE '%' || :search || '%') AND (termUID=:termUID)")
+    LiveData<List<Course>> searchCourses(String search, int termUID);
+
     @Query("SELECT * FROM course WHERE courseUID=:UID")
     Course findByUID(int UID);
 

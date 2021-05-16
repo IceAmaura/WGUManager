@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 import edu.band148.wgumanager.model.Course;
+import edu.band148.wgumanager.model.Term;
 import edu.band148.wgumanager.model.database.AppRepository;
 
 public class CourseViewModel extends AndroidViewModel {
@@ -25,6 +26,10 @@ public class CourseViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Course>> getAllCourses() { return allCourses; }
+
+    public LiveData<List<Course>> searchCourses(String search, int termUID) {
+        return appRepository.searchCourses(search, termUID);
+    }
 
     public LiveData<Integer> getCourseCountByTerm(int termUID) {
         return appRepository.getCourseCountByTerm(termUID);

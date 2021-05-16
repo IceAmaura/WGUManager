@@ -55,6 +55,18 @@ public class AppRepository {
         return allAssessments;
     }
 
+    public LiveData<List<Term>> searchTerms(String search) {
+        return termDao.searchTerms(search);
+    }
+
+    public LiveData<List<Course>> searchCourses(String search, int termUID) {
+        return courseDao.searchCourses(search, termUID);
+    }
+
+    public LiveData<List<Assessment>> searchAssessments(String search, int courseUID) {
+        return assessmentDao.searchAssessments(search, courseUID);
+    }
+
     public LiveData<List<Course>> getCoursesByTerm(int termUID) {
         return courseDao.findByTerm(termUID);
     }

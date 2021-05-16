@@ -16,6 +16,9 @@ public interface TermDao {
     @Query("SELECT * FROM term")
     LiveData<List<Term>> getAll();
 
+    @Query("SELECT * from term WHERE termTitle LIKE '%' || :search || '%'")
+    LiveData<List<Term>> searchTerms(String search);
+
     @Query("SELECT * FROM term WHERE termUID=:UID")
     Term findByUID(int UID);
 

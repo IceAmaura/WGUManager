@@ -1,8 +1,11 @@
 package edu.band148.wgumanager;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import java.util.List;
 import edu.band148.wgumanager.adapter.AssessmentListAdapter;
 import edu.band148.wgumanager.model.Assessment;
 import edu.band148.wgumanager.model.Course;
+import edu.band148.wgumanager.model.Term;
 import edu.band148.wgumanager.viewmodel.AssessmentViewModel;
 
 public class AssessmentActivity extends AppCompatActivity {
@@ -42,14 +46,36 @@ public class AssessmentActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         assessmentViewModel =  new ViewModelProvider(this, viewModelFactory).get(AssessmentViewModel.class);
-        assessmentViewModel.getAssessmentsByCourse(intent.getIntExtra("courseUID", 1)).observe(this, new Observer<List<Assessment>>() {
-            @Override
-            public void onChanged(List<Assessment> assessments) {
-                adapter.setAssessments(assessments);
-            }
-        });
-
+        ImageButton searchButton = findViewById(R.id.searchButton);
         FloatingActionButton fab = findViewById(R.id.fab);
+        int courseUID = intent.getIntExtra("courseUID", Integer.MAX_VALUE);
+        if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_SEARCH)) {
+            Bundle appData = getIntent().getBundleExtra(SearchManager.APP_DATA);
+            if (appData != null) {
+                courseUID = appData.getInt("courseUID");
+            }
+            String query = getIntent().getStringExtra(SearchManager.QUERY);
+            assessmentViewModel.searchAssessments(query, courseUID).observe(this, new Observer<List<Assessment>>() {
+                @Override
+                public void onChanged(List<Assessment> assessments) {
+                    adapter.setAssessments(assessments);
+                }
+            });
+            searchButton.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+        } else {
+            assessmentViewModel.getAssessmentsByCourse(courseUID).observe(this, new Observer<List<Assessment>>() {
+                @Override
+                public void onChanged(List<Assessment> assessments) {
+                    adapter.setAssessments(assessments);
+                }
+            });
+            int finalCourseUID = courseUID;
+            searchButton.setOnClickListener(v -> {
+                onSearchRequested(finalCourseUID);
+            });
+        }
+
         fab.setOnClickListener(v -> {
             Intent newIntent = new Intent(this, EditAssessmentActivity.class);
             newIntent.putExtra("add", true);
@@ -73,5 +99,12 @@ public class AssessmentActivity extends AppCompatActivity {
             tempAssessment.assessmentEnd = data.getStringExtra("assessmentEnd");
             assessmentViewModel.insert(tempAssessment);
         }
+    }
+
+    public boolean onSearchRequested(int courseUID) {
+        Bundle appData = new Bundle();
+        appData.putInt("courseUID", courseUID);
+        startSearch(null, false, appData, false);
+        return true;
     }
 }

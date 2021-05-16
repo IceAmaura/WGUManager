@@ -38,6 +38,7 @@ import edu.band148.wgumanager.adapter.CourseListAdapter;
 import edu.band148.wgumanager.adapter.InstructorListAdapter;
 import edu.band148.wgumanager.model.Course;
 import edu.band148.wgumanager.model.Instructor;
+import edu.band148.wgumanager.model.Term;
 import edu.band148.wgumanager.util.WguManagerUtil;
 import edu.band148.wgumanager.viewmodel.CourseViewModel;
 import edu.band148.wgumanager.viewmodel.InstructorViewModel;
@@ -47,6 +48,7 @@ import static edu.band148.wgumanager.util.WguManagerUtil.updateLabel;
 
 public class EditCourseActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
+    private CourseViewModel courseViewModel;
     private InstructorViewModel instructorViewModel;
     private final Calendar startDateCalendar;
     private final Calendar endDateCalendar;
@@ -68,8 +70,11 @@ public class EditCourseActivity extends AppCompatActivity {
         final InstructorListAdapter adapter = new InstructorListAdapter(this);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        courseViewModel =  new ViewModelProvider(this, viewModelFactory).get(CourseViewModel.class);
         instructorViewModel =  new ViewModelProvider(this, viewModelFactory).get(InstructorViewModel.class);
+
         instructorViewModel.getInstructorsByCourse(intent.getIntExtra("courseUID", Integer.MAX_VALUE)).observe(this, new Observer<List<Instructor>>() {
             @Override
             public void onChanged(List<Instructor> instructors) {
@@ -84,6 +89,7 @@ public class EditCourseActivity extends AppCompatActivity {
 
         ImageButton startNotificationButton = findViewById(R.id.startNotificationButton);
         ImageButton endNotificationButton = findViewById(R.id.endNotificationButton);
+        ImageButton deleteButton = findViewById(R.id.deleteButton);
 
         if (intent.getBooleanExtra("add", true)) {
             toolbar.setTitle("Add Course");
@@ -92,6 +98,7 @@ public class EditCourseActivity extends AppCompatActivity {
             mRecyclerView.setVisibility(View.GONE);
             startNotificationButton.setVisibility(View.GONE);
             endNotificationButton.setVisibility(View.GONE);
+            deleteButton.setVisibility(View.GONE);
         } else {
             toolbar.setTitle("Edit Course");
         }
@@ -242,6 +249,13 @@ public class EditCourseActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Please select an end date!", Toast.LENGTH_SHORT).show();
             }
+        });
+        
+        deleteButton.setOnClickListener(v -> {
+            Course tempCourse = new Course();
+            tempCourse.courseUID = intent.getIntExtra("courseUID", Integer.MAX_VALUE);
+            courseViewModel.delete(tempCourse);
+            finish();
         });
     }
 }

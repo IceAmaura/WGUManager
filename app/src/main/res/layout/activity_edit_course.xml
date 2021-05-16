@@ -18,13 +18,32 @@
             android:layout_height="wrap_content"
             android:theme="@style/Theme.WGUManager.AppBarOverlay">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
+                    android:layout_width="352dp"
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
 
                     app:popupTheme="@style/Theme.WGUManager.PopupOverlay" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageButton
+                    android:id="@+id/deleteButton"
+                    style="@android:style/Widget.DeviceDefault.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#00FFFFFF"
+                    app:srcCompat="@drawable/ic_baseline_delete_24" />
+            </LinearLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 

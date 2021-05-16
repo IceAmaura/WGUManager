@@ -9,6 +9,7 @@ import java.util.List;
 
 import edu.band148.wgumanager.model.Assessment;
 import edu.band148.wgumanager.model.Term;
+import edu.band148.wgumanager.model.Course;
 import edu.band148.wgumanager.model.database.AppRepository;
 
 public class AssessmentViewModel extends AndroidViewModel {
@@ -32,4 +33,6 @@ public class AssessmentViewModel extends AndroidViewModel {
     }
 
     public void insert(Assessment assessment) {appRepository.insertAssessment(assessment);}
+
+    public void delete(Assessment assessment) {appRepository.deleteAssessment(assessment);}
 }

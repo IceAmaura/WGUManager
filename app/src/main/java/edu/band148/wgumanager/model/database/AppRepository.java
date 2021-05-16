@@ -103,6 +103,14 @@ public class AppRepository {
         new deleteTermAsyncTask(termDao).execute(term);
     }
 
+    public void deleteCourse(Course course) {
+        new deleteCourseAsyncTask(courseDao).execute(course);
+    }
+
+    public void deleteAssessment(Assessment assessment) {
+        new deleteAssessmentAsyncTask(assessmentDao).execute(assessment);
+    }
+
     private static class insertTermAsyncTask extends AsyncTask<Term, Void, Void> {
         private TermDao asyncTermDao;
 
@@ -169,6 +177,34 @@ public class AppRepository {
         @Override
         protected Void doInBackground(final Term... terms) {
             asyncTermDao.delete(terms[0]);
+            return null;
+        }
+    }
+
+    private static class deleteCourseAsyncTask extends AsyncTask<Course, Void, Void> {
+        private CourseDao asyncCourseDao;
+
+        deleteCourseAsyncTask(CourseDao courseDao) {
+            asyncCourseDao = courseDao;
+        }
+
+        @Override
+        protected Void doInBackground(final Course... courses) {
+            asyncCourseDao.delete(courses[0]);
+            return null;
+        }
+    }
+
+    private static class deleteAssessmentAsyncTask extends AsyncTask<Assessment, Void, Void> {
+        private AssessmentDao asyncAssessmentDao;
+
+        deleteAssessmentAsyncTask(AssessmentDao assessmentDao) {
+            asyncAssessmentDao = assessmentDao;
+        }
+
+        @Override
+        protected Void doInBackground(final Assessment... assessments) {
+            asyncAssessmentDao.delete(assessments[0]);
             return null;
         }
     }

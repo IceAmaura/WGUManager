@@ -17,10 +17,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
+
+import edu.band148.wgumanager.model.Assessment;
+import edu.band148.wgumanager.model.Course;
+import edu.band148.wgumanager.viewmodel.AssessmentViewModel;
+import edu.band148.wgumanager.viewmodel.CourseViewModel;
 
 import static edu.band148.wgumanager.util.WguManagerUtil.setCalendar;
 import static edu.band148.wgumanager.util.WguManagerUtil.updateLabel;
@@ -29,6 +35,7 @@ public class EditAssessmentActivity extends AppCompatActivity {
 
     private final Calendar startDateCalendar;
     private final Calendar endDateCalendar;
+    private AssessmentViewModel assessmentViewModel;
 
     public EditAssessmentActivity() {
         startDateCalendar = Calendar.getInstance();
@@ -48,6 +55,9 @@ public class EditAssessmentActivity extends AppCompatActivity {
             toolbar.setTitle("Edit Assessment");
         }
 
+        ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        assessmentViewModel =  new ViewModelProvider(this, viewModelFactory).get(AssessmentViewModel.class);
+        
         Spinner spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> stringAdapter = ArrayAdapter.createFromResource(this, R.array.test_array, android.R.layout.simple_spinner_item);
         stringAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -62,6 +72,7 @@ public class EditAssessmentActivity extends AppCompatActivity {
 
         ImageButton startNotificationButton = findViewById(R.id.startNotificationButton);
         ImageButton endNotificationButton = findViewById(R.id.endNotificationButton);
+        ImageButton deleteButton = findViewById(R.id.deleteButton);
         
         if (!intent.getBooleanExtra("add", true)) {
             String assessmentNameString = intent.getStringExtra("assessmentTitle");
@@ -81,6 +92,7 @@ public class EditAssessmentActivity extends AppCompatActivity {
         } else {
             startNotificationButton.setVisibility(View.GONE);
             endNotificationButton.setVisibility(View.GONE);
+            deleteButton.setVisibility(View.GONE);
         }
 
         DatePickerDialog.OnDateSetListener startDate = new DatePickerDialog.OnDateSetListener() {
@@ -170,6 +182,13 @@ public class EditAssessmentActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Please select an end date!", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        deleteButton.setOnClickListener(v -> {
+            Assessment tempAssessment = new Assessment();
+            tempAssessment.assessmentUID = intent.getIntExtra("assessmentUID", Integer.MAX_VALUE);
+            assessmentViewModel.delete(tempAssessment);
+            finish();
         });
     }
 }

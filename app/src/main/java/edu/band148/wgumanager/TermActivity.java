@@ -52,6 +52,7 @@ public class TermActivity extends AppCompatActivity {
         ViewModelProvider.AndroidViewModelFactory viewModelFactory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         termViewModel =  new ViewModelProvider(this, viewModelFactory).get(TermViewModel.class);
         FloatingActionButton fab = findViewById(R.id.fab);
+        ImageButton searchButton = findViewById(R.id.searchButton);
         if (getIntent().getAction() != null && getIntent().getAction().equals(Intent.ACTION_SEARCH)) {
             String query = getIntent().getStringExtra(SearchManager.QUERY);
             termViewModel.searchTerms(query).observe(this, new Observer<List<Term>>() {
@@ -61,6 +62,7 @@ public class TermActivity extends AppCompatActivity {
                 }
             });
             fab.setVisibility(View.GONE);
+            searchButton.setVisibility(View.GONE);
         } else {
             termViewModel.getAllTerms().observe(this, new Observer<List<Term>>() {
                 @Override
@@ -70,14 +72,12 @@ public class TermActivity extends AppCompatActivity {
             });
         }
 
-
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(this, EditTermActivity.class);
             intent.putExtra("add", true);
             startActivityForResult(intent, 1);
         });
 
-        ImageButton searchButton = findViewById(R.id.searchButton);
         searchButton.setOnClickListener(v -> {
             onSearchRequested();
         });
